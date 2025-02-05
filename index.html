@@ -9,6 +9,16 @@
     <script defer src="js/vue.min.js"></script>
     <script defer src="js/main.js"></script>
     <title>Product App</title>
+    <style>
+        .strikethrough {
+            text-decoration: line-through;
+        }
+        .link {
+            text-decoration: none;
+            text-shadow: 1px 0px 0px black;
+            color: black;
+        }
+    </style>
 </head>
 <body>
 <div id="app">
@@ -17,22 +27,23 @@
             <img v-bind:alt="altText" v-bind:src="image">
         </div>
         <div class="product-info">
-            <h1>{{ product }}</h1>
+            <h1>{{ title }}</h1>
             <p>{{description}}</p>
-            <a :href="link">More products like this</a>
+            <a class="link" :href="link">More products like this</a>
             <p v-if="inventory > 10">In Stock</p>
             <p v-else-if="inventory <= 10 && inventory > 0">Almost sold out!</p>
-            <p v-else>Out of Stock</p>
+            <p v-else :class="{ strikethrough: !inStock }">Out of Stock</p>
             <span> {{onsale}}</span>
+            <p>{{ sale }}</p>
             <ul>
                 <li v-for="detail in details">{{ detail }}</li>
             </ul>
             <div
                     class="color-box"
-                    v-for="variant in variants"
+                    v-for="(variant, index) in variants"
                     :key="variant.variantId"
                     :style="{ backgroundColor:variant.variantColor }"
-                    @mouseover="updateProduct(variant.variantImage)"
+                    @mouseover="updateProduct(index)"
             >
             </div>
             <ul>
