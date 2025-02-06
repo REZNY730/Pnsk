@@ -159,8 +159,7 @@ Vue.component('product', {
         <h1>{{ title }}</h1>
         <p>{{ description }}</p>
         <a class="link" :href="link">More products like this</a>
-        <p v-if="inventory > 10">In Stock</p>
-        <p v-else-if="inventory <= 10 && inventory > 0">Almost sold out!</p>
+        <p v-if="inStock">In Stock</p>
         <p v-else :class="{ strikethrough: !inStock }">Out of Stock</p>
         <span>{{ onsale }}</span>
         <p>{{ sale }}</p>        
@@ -191,7 +190,6 @@ Vue.component('product', {
             selectedVariant: 0, // Выбранный вариант продукта
             altText: "A pair of socks", // Альтернативный текст для изображения
             link: "https://www.amazon.com/s/ref=nb_sb_noss?url=search-alias%3Daps&field-keywords=socks.", // Ссылка на другие продукты
-            inStock: true,
             inventory: 100,
             onsale: "On Sale",
             onSale: true,// Статус распродажи
