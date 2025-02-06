@@ -1,16 +1,17 @@
-let eventBus = new Vue()
+let eventBus = new Vue() // Создаем экземпляр Vue, который будет использоваться как шина событий для обмена данными между компонентами
 
+// Компонент для отображения вкладок с информацией о проду
 Vue.component('product-tabs', {
-    props: {
-        reviews: {
+    props: { //Определяет свойства, которые компонент принимает.
+        reviews: { // Пропс для отзывов о продукте
             type: Array,
             required: false
         },
-        shippingCost: {
+        shippingCost: { // Пропс для стоимости доставк
             type: String,
             required: true
         },
-        details: {
+        details: { // Пропс для деталей продукта
             type: Array,
             required: true
         }
@@ -49,13 +50,14 @@ Vue.component('product-tabs', {
                 </div>
             </div>
             `,
-    data() {
+    data() { //Возвращает объект с данными компонента.
         return {
-            tabs: ['Reviews', 'Make a Review','Shipping', 'Details'],
-            selectedTab: 'Reviews'
+            tabs: ['Reviews', 'Make a Review','Shipping', 'Details'], // Названия вкладок
+            selectedTab: 'Reviews' // Вкладка по умолчанию
         }
     }
 })
+// Компонент для формы отзыва о продукте
 Vue.component('product-review', {
     template: `
 <form class="review-form" @submit.prevent="onSubmit">
@@ -102,16 +104,17 @@ Vue.component('product-review', {
  `,
     data() {
         return {
-            name: null,
-            review: null,
-            rating: null,
-            recommendation: null,
-            errors: []
+            name: null, // Имя пользователя
+            review: null, // Текст отзыва
+            rating: null, // Рейтинг
+            recommendation: null, // Рекомендация
+            errors: [] // Ошибки валидации
         }
     },
     methods: {
-        onSubmit() {
-            this.errors = [];
+        onSubmit() {    // Логика обработки отправки отзыва
+            this.errors = []; // Сбрасываем ошибки
+            // Проверяем, заполнены ли все поля
             if (this.name && this.review && this.rating && this.recommendation) {
                 const productReview = {
                     name: this.name,
@@ -119,6 +122,7 @@ Vue.component('product-review', {
                     rating: this.rating,
                     recommendation: this.recommendation
                 };
+                // Отправляем отзыв через event bus
                 eventBus.$emit('review-submitted', productReview);
                 this.resetForm();
             } else {
@@ -130,7 +134,7 @@ Vue.component('product-review', {
                 ].filter(Boolean));
             }
         },
-        resetForm() {
+        resetForm() { // Сброс формы
             this.name = '';
             this.review = '';
             this.rating = null;
@@ -138,6 +142,7 @@ Vue.component('product-review', {
         }
     }
 });
+// Основной компонент продукта
 Vue.component('product', {
     props: {
         premium: {
@@ -179,19 +184,19 @@ Vue.component('product', {
 `,
     data() {
         return {
-            reviews: [],
-            product: "Socks",
-            brand: 'Vue Mastery',
-            description: "A pair of warm, fuzzy socks",
-            selectedVariant: 0,
-            altText: "A pair of socks",
-            link: "https://www.amazon.com/s/ref=nb_sb_noss?url=search-alias%3Daps&field-keywords=socks.",
+            reviews: [], // Массив для хранения отзывов
+            product: "Socks", // Название продукта
+            brand: 'Vue Mastery', // Бренд продукта
+            description: "A pair of warm, fuzzy socks", // Описание продукта
+            selectedVariant: 0, // Выбранный вариант продукта
+            altText: "A pair of socks", // Альтернативный текст для изображения
+            link: "https://www.amazon.com/s/ref=nb_sb_noss?url=search-alias%3Daps&field-keywords=socks.", // Ссылка на другие продукты
             inStock: true,
             inventory: 100,
             onsale: "On Sale",
-            onSale: true,
-            details: ['80% cotton', '20% polyester', 'Gender-neutral'],
-            variants: [
+            onSale: true,// Статус распродажи
+            details: ['80% cotton', '20% polyester', 'Gender-neutral'], // Детали продукта
+            variants: [ // Варианты продукта
                 {
                     variantId: 2234,
                     variantColor: 'green',
@@ -206,20 +211,21 @@ Vue.component('product', {
                 }
             ],
             reviews: [],
-            sizes: ['S', 'M', 'L', 'XL', 'XXL', 'XXXL'],
-            cart: 0,
-            salesCount: 0
+            sizes: ['S', 'M', 'L', 'XL', 'XXL', 'XXXL'], // Доступные размеры
+            cart: 0, // Корзина для хранения добавленных товаров
+            salesCount: 0 // Количество продаж
         }
     },
-    methods: {
-        addToCart() {
+    methods: { //Подписывается на событие review-submitted для добавления отзыва.
+
+        addToCart() { // Добавление в корзину
             this.$emit('add-to-cart', this.variants[this.selectedVariant].variantId);
-            this.salesCount++;
+            this.salesCount++; // Увеличиваем количество продаж
         },
-        addReview(productReview) {
+        addReview(productReview) { /* Добавление отзыва */
             this.reviews.push(productReview)
         },
-        deletToCart() {
+        deletToCart() { /* Удаление из корзины */
             if (this.cart > 0) {
                 this.cart -= 1;
             }
@@ -227,44 +233,46 @@ Vue.component('product', {
         removeFromCart() {
             this.$emit('remove-from-cart');
         },
-        updateProduct(index) {
+        updateProduct(index) { /* Обновление выбранного варианта продукта */
             this.selectedVariant = index;
             console.log(index);
         },
     },
     mounted() {
+        // Подписываемся на событие 'review-submitted' для добавления отзыва
         eventBus.$on('review-submitted', this.addReview);
     },
     beforeDestroy() {
+        // Отписываемся от события перед уничтожением компонента
         eventBus.$off('review-submitted', this.addReview);
     },
-    computed: {
-        title() {
+    computed: { //Вычисляемые свойства для получения информации о продукте
+        title() { /* Возвращает название продукта */
             return this.brand + ' ' + this.product;
         },
-        image() {
+        image() { /* Возвращает изображение продукта */
             return this.variants[this.selectedVariant].variantImage;
         },
-        inStock() {
+        inStock() { /* Проверяет наличие на складе */
             return this.variants[this.selectedVariant].variantQuantity > 0;
         },
-        sale() {
+        sale() { // Возвращаем статус распродажи
             return this.onSale ? `${this.brand} ${this.product} is on sale!` : `${this.brand} ${this.product} is not on sale.`;
         },
-        shipping() {
+        shipping() {  /* Определяет стоимость доставки */
             return this.premium ? "Free" : "2.99";
         },
-        averageRating() {
+        averageRating() { /* Рассчитывает средний рейтинг */
             if (this.reviews.length === 0) {
                 return 0;
             }
             const totalRating = this.reviews.reduce((sum, review) => sum + review.rating, 0);
-            return totalRating / this.reviews.length;
+            return totalRating / this.reviews.length; // Возвращаем средний рейтинг
         }
     }
 });
 Vue.component('product-details', {
-    props: {
+    props: { //Принимает массив деталей продукта.
         details: {
             type: Array,
             required: true
@@ -279,17 +287,20 @@ Vue.component('product-details', {
             </div>
             `
 });
+// Основной экземпляр Vue приложения
 let app = new Vue({
-    el: '#app',
+    el: '#app', // Привязываем приложение к элементу с id 'app'
     data: {
-        premium: true,
-        cart: [],
+        premium: true, // Статус премиум-клиента
+        cart: [], // Корзина для хранения добавленных товаро
     },
     methods: {
         updateCart(id) {
+            // Добавляем товар в корзину
             this.cart.push(id);
         },
         updateRemoveFromCart() {
+            // Удаляем последний добавленный товар из корзины if (this.cart.length > 0) {
             this.cart.pop();
         }
     }
