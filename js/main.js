@@ -156,8 +156,11 @@ Vue.component('product', {
         <img v-bind:alt="altText" v-bind:src="image">
       </div>
       <div class="product-info">
-        <h1>{{ title }}</h1>
-        <p>{{ description }}</p>
+         <h1>{{ title }}</h1>
+    <p>Brand: {{ brand }}</p>
+    <p>Style: {{ style }}</p>
+    <p>Price: {{ price }}</p>
+    <p>{{ description }}</p>
         <a class="link" :href="link">More products like this</a>
         <p v-if="inStock">In Stock</p>
         <p v-else :class="{ strikethrough: !inStock }">Out of Stock</p>
@@ -172,7 +175,16 @@ Vue.component('product', {
         </div>
         <ul>
           <li v-for="sizes in sizes">{{ sizes }}</li>
-         </ul>
+        </ul>
+        <p>Select Brand:</p>
+<select v-model="selectedBrand">
+    <option v-for="(brand, index) in brands" :key="index" :value="index">{{ brand.name }}</option>
+</select>
+
+<p>Select Style:</p>
+<select v-model="selectedStyle">
+    <option v-for="(style, index) in styles" :key="index" :value="index">{{ style.name }}</option>
+</select>
                     <button @click="addToCart" :disabled="!inStock" :class="{ disabledButton: !inStock }">Add to cart</button>
                     <button @click="removeFromCart">Remove from cart</button>
                 </div>
@@ -211,7 +223,18 @@ Vue.component('product', {
             reviews: [],
             sizes: ['S', 'M', 'L', 'XL', 'XXL', 'XXXL'], // Доступные размеры
             cart: 0, // Корзина для хранения добавленных товаров
-            salesCount: 0 // Количество продаж
+            salesCount: 0,brands: [
+                { name: 'Brand A', markup: 1.2 },
+                { name: 'Brand B', markup: 1.5 },
+                { name: 'Brand C', markup: 1.3 }
+            ],
+            styles: [
+                { name: 'Classic', popularity: 1.0 },
+                { name: 'Sport', popularity: 1.2 },
+                { name: 'Casual', popularity: 1.1 }
+            ],
+            selectedBrand: 0, // Индекс выбранного бренда
+            selectedStyle: 0 // Индекс выбранного стиля // Количество продаж
         }
     },
     methods: { //Подписывается на событие review-submitted для добавления отзыва.
@@ -266,6 +289,18 @@ Vue.component('product', {
             }
             const totalRating = this.reviews.reduce((sum, review) => sum + review.rating, 0);
             return totalRating / this.reviews.length; // Возвращаем средний рейтинг
+        },
+        brand() {
+            return this.brands[this.selectedBrand].name;
+        },
+        style() {
+            return this.styles[this.selectedStyle].name;
+        },
+        price() {
+            const basePrice = 20; // Базовая цена
+            const brandMarkup = this.brands[this.selectedBrand].markup;
+            const stylePopularity = this.styles[this.selectedStyle].popularity;
+            return (basePrice * brandMarkup * stylePopularity).toFixed(2);
         }
     }
 });
