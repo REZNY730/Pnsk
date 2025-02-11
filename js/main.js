@@ -224,9 +224,9 @@ Vue.component('product', {
             sizes: ['S', 'M', 'L', 'XL', 'XXL', 'XXXL'], // Доступные размеры
             cart: 0, // Корзина для хранения добавленных товаров
             salesCount: 0,brands: [
-                { name: 'Brand A', markup: 1.2 },
-                { name: 'Brand B', markup: 1.5 },
-                { name: 'Brand C', markup: 1.3 }
+                { name: 'WhatsApp', markup: 1.2 },
+                { name: 'Abibas', markup: 1.5 },
+                { name: 'Stone Isnland', markup: 1.3 }
             ],
             styles: [
                 { name: 'Classic', popularity: 1.0 },
