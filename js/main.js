@@ -1,0 +1,126 @@
+Vue.component('note-column', {
+    props: ['column'],
+    template: `
+        <div class="column">
+            <h2>{{ column.title }}</h2>
+            <note-card
+                v-for="(card, cardIndex) in column.cards"
+                :key="card.id"
+                :card="card"
+                :isSecondColumn="column.title === 'Столбец 2'"
+                :secondColumnCardCount="getSecondColumnCardCount()"
+                @remove-card="$emit('remove-card', $event)"
+                @update-card="$emit('update-card', $event)"
+            ></note-card>
+            <button v-if="canAddCard(column)" @click="$emit('add-card', column)">Добавить карточку</button>
+        </div>
+    `,
+    methods: {
+        canAddCard(column) {
+            return !(column.title === 'Столбец 1' && column.cards.length >= 3) &&
+                !(column.title === 'Столбец 2' && column.cards.length >= 5);
+        },
+        getSecondColumnCardCount() {
+            const secondColumn = this.$parent.columns.find(col => col.title === 'Столбец 2');
+            return secondColumn ? secondColumn.cards.length : 0;
+        }
+    }
+});
+
+Vue.component('note-app', {
+    data() {
+        return {
+            columns: [
+                { title: 'Столбец 1', cards: [] },
+                { title: 'Столбец 2', cards: [] },
+                { title: 'Столбец 3', cards: [] }
+            ],
+            nextCardId: 1
+        };
+    },
+    created() {
+        this.loadCards();
+    },
+    methods: {
+        loadCards() {
+            const savedData = JSON.parse(localStorage.getItem('cards'));
+            if (savedData) {
+                this.columns = savedData.columns;
+                this.nextCardId = savedData.nextCardId;
+            }
+        },
+        saveCards() {
+            localStorage.setItem('cards', JSON.stringify({ columns: this.columns, nextCardId: this.nextCardId }));
+        },
+        addCard(column) {
+            const newCard = {
+                id: this.nextCardId++,
+                title: `Карточка ${this.nextCardId}`,
+                color: '#f9f9f9',
+                items: [
+                    { text: 'Пункт 1', completed: false },
+                    { text: 'Пункт 2', completed: false },
+                    { text: 'Пункт 3', completed: false }
+                ],
+                completedDate: null
+            };
+            column.cards.push(newCard);
+            this.saveCards();
+        },
+        removeCard(cardId) {
+            for (let column of this.columns) {
+                const index = column.cards.findIndex(card => card.id === cardId);
+                if (index !== -1) {
+                    column.cards.splice(index, 1);
+                    this.saveCards();
+                    break;
+                }
+            }
+        },
+        updateCard(card) {
+            const completedItems = card.items.filter(item => item.completed).length;
+            const totalItems = card.items.length;
+
+            if (totalItems > 0) {
+                const completionRate = completedItems / totalItems;
+
+                if (completionRate > 0.5 && this.columns[0].cards.includes(card)) {
+                    this.moveCard(card, 1);
+                } else if (completionRate === 1 && this.columns[1].cards.includes(card)) {
+                    this.moveCard(card, 2);
+                    card.completedDate = new Date().toLocaleString();
+                }
+            }
+            this.saveCards();
+        },
+        moveCard(card, targetColumnIndex) {
+            for (let column of this.columns) {
+                const index = column.cards.findIndex(c => c.id === card.id);
+                if (index !== -1) {
+                    column.cards.splice(index, 1);
+                    this.columns[targetColumnIndex].cards.push(card);
+                    break;
+                }
+            }
+        }
+    },
+    template: `
+        <div>
+            <div class="columns">
+                <note-column
+                    v-for="(column, index) in columns"
+                    :key="index"
+                    :column="column"
+                    @remove-card="removeCard"
+                    @update-card="updateCard"
+                    @add-card="addCard"
+                ></note-column>
+            </div>
+        </div>
+    `
+});
+
+// Создание экземпляра Vue приложения
+new Vue({
+    el: '#app'
+});
