@@ -48,16 +48,16 @@ Vue.component('note-column', {
         <div class="column">
             <h2>{{ column.title }}</h2>
             <note-card
-                v-for="(card, cardIndex) in column.cards"
-                :key="card.id"
-                :card="card"
-                :isSecondColumn="column.title === 'Столбец 2'"
-                :secondColumnCardCount="getSecondColumnCardCount()"
-                @remove-card="$emit('remove-card', $event)"
-                @update-card="$emit('update-card', $event)"
-            ></note-card>
-            <button v-if="canAddCard(column)" @click="$emit('add-card', column)">Добавить карточку</button>
-        </div>
+                v-for="(card, cardIndex) in column.cards" 
+                :key="card.id" 
+                :card="card" 
+                :isSecondColumn="column.title === 'Столбец 2'" 
+                :secondColumnC ardCount="getSecondColumnCardCount()"
+                @remove-card="$emit('remove-card', $event)" 
+                @update-card="$emit('update-card', $event)" 
+            ></note-card> 
+            <button v-if="canAddCard(column)" @click="$emit('add-card', column)">Добавить карточку</button> 
+        </div> 
     `,
     methods: {
         canAddCard(column) {
