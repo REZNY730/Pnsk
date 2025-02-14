@@ -1,20 +1,20 @@
 Vue.component('note-card', {
     props: ['card', 'isSecondColumn', 'secondColumnCardCount'],
-    template: ` 
-        <div class="card"> 
-            <h3>{{ card.title }}</h3> 
-            <input type="text" v-model="card.title" placeholder="Заголовок карточки" class="form-control" /> 
-            <ul> 
-                <li v-for="(item, itemIndex) in card.items" :key="itemIndex" class="list-item"> 
-                     <input type="checkbox" v-model="item.completed" @change="updateCard" :disabled="!isSecondColumn && secondColumnCardCount >= 5">
-                    <input type="text" v-model="item.text" placeholder="Пункт списка" class="form-control" /> 
-                </li> 
-            </ul> 
-            <input type="text" v-model="newItemText" placeholder="Новый пункт списка" class="form-control" /> 
-            <button @click="addItem" :disabled="itemCount >= 5">Добавить пункт</button> 
-            <button @click="removeCard(card.id)">Удалить</button> 
-            <p v-if="card.completedDate">Завершено: {{ card.completedDate }}</p> 
-        </div> 
+    template: `  
+        <div class="card">  
+            <h3>{{ card.title }}</h3>  
+            <input type="text" v-model="card.title" placeholder="Заголовок карточки" class="form-control" />  
+            <ul>  
+                <li v-for="(item, itemIndex) in card.items" :key="itemIndex" class="list-item">  
+                     <input type="checkbox" v-model="item.completed" @change="updateCard" :disabled="!isSecondColumn && secondColumnCardCount >= 5"> 
+                    <input type="text" v-model="item.text" placeholder="Пункт списка" class="form-control" />  
+                </li>  
+            </ul>  
+            <input type="text" v-model="newItemText" placeholder="Новый пункт списка" class="form-control" />  
+            <button @click="addItem" :disabled="itemCount >= 5">Добавить пункт</button>  
+            <button @click="removeCard(card.id)">Удалить</button>  
+            <p v-if="card.completedDate">Завершено: {{ card.completedDate }}</p>  
+        </div>  
     `,
     data() {
         return {
