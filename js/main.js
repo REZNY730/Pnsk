@@ -127,7 +127,6 @@ Vue.component('note-app', {
 
             if (totalItems > 0) {
                 const completionRate = completedItems / totalItems;
-
                 if (completionRate > 0.5 && this.columns[0].cards.includes(card)) {
                     this.moveCard(card, 1);
                 } else if (completionRate === 1 && this.columns[1].cards.includes(card)) {
@@ -148,19 +147,19 @@ Vue.component('note-app', {
             }
         }
     },
-    template: `
-        <div>
-            <div class="columns">
-                <note-column
-                    v-for="(column, index) in columns"
-                    :key="index"
-                    :column="column"
-                    @remove-card="removeCard"
-                    @update-card="updateCard"
-                    @add-card="addCard"
-                ></note-column>
-            </div>
-        </div>
+    template: `  
+        <div> 
+            <div class="columns"> 
+                <note-column 
+                    v-for="(column, index) in columns" 
+                    :key="index" 
+                    :column="column" 
+                    @remove-card="removeCard" 
+                    @update-card="updateCard" 
+                    @add-card="addCard" 
+                ></note-column> 
+            </div> 
+        </div> 
     `
 });
 
