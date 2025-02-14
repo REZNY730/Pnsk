@@ -82,16 +82,16 @@ Vue.component('note-app', {
             nextCardId: 1
         };
     },
-    created() {
-        this.loadCards();
-    },
-    methods: {
-        loadCards() {
-            const savedData = JSON.parse(localStorage.getItem('cards'));
-            if (savedData) {
-                this.columns = savedData.columns;
-                this.nextCardId = savedData.nextCardId;
-            }
+     created() {
+         this.loadCards();
+     },
+     methods: {
+         loadCards() {
+             const savedData = JSON.parse(localStorage.getItem('cards'));
+             if (savedData) {
+                 this.columns = savedData.columns;
+                 this.nextCardId = savedData.nextCardId;
+             }
         },
         saveCards() {
             localStorage.setItem('cards', JSON.stringify({ columns: this.columns, nextCardId: this.nextCardId }));
