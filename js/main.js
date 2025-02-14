@@ -1,20 +1,20 @@
 Vue.component('note-card', {
     props: ['card', 'isSecondColumn', 'secondColumnCardCount'],
-    template: `  
-        <div class="card">  
-            <h3>{{ card.title }}</h3>  
-            <input type="text" v-model="card.title" placeholder="Заголовок карточки" class="form-control" />  
-            <ul>  
-                <li v-for="(item, itemIndex) in card.items" :key="itemIndex" class="list-item">  
-                     <input type="checkbox" v-model="item.completed" @change="updateCard" :disabled="!isSecondColumn && secondColumnCardCount >= 5"> 
-                    <input type="text" v-model="item.text" placeholder="Пункт списка" class="form-control" />  
-                </li>  
-            </ul>  
-            <input type="text" v-model="newItemText" placeholder="Новый пункт списка" class="form-control" />  
-            <button @click="addItem" :disabled="itemCount >= 5">Добавить пункт</button>  
-            <button @click="removeCard(card.id)">Удалить</button>  
-            <p v-if="card.completedDate">Завершено: {{ card.completedDate }}</p>  
-        </div>  
+    template: `
+        <div class="card">
+            <h3>{{ card.title }}</h3>
+            <input type="text" v-model="card.title" placeholder="Заголовок карточки" class="form-control" />
+            <ul>
+                <li v-for="(item, itemIndex) in card.items" :key="itemIndex" class="list-item">
+                    <input type="checkbox" v-model="item.completed" @change="updateCard" :disabled="!isSecondColumn && secondColumnCardCount >= 5">
+                    <input type="text" v-model="item.text" placeholder="Пункт списка" class="form-control" />
+                </li>
+            </ul>
+            <input type="text" v-model="newItemText" placeholder="Новый пункт списка" class="form-control" />
+            <button @click="addItem" :disabled="itemCount >= 5">Добавить пункт</button>
+            <button @click="removeCard(card.id)">Удалить</button>
+            <p v-if="card.completedDate">Завершено: {{ card.completedDate }}</p>
+        </div>
     `,
     data() {
         return {
@@ -48,16 +48,16 @@ Vue.component('note-column', {
         <div class="column">
             <h2>{{ column.title }}</h2>
             <note-card
-                v-for="(card, cardIndex) in column.cards" 
-                :key="card.id" 
-                :card="card" 
-                :isSecondColumn="column.title === 'Столбец 2'" 
-                :secondColumnC ardCount="getSecondColumnCardCount()"
-                @remove-card="$emit('remove-card', $event)" 
-                @update-card="$emit('update-card', $event)" 
-            ></note-card> 
-            <button v-if="canAddCard(column)" @click="$emit('add-card', column)">Добавить карточку</button> 
-        </div> 
+                v-for="(card, cardIndex) in column.cards"
+                :key="card.id"
+                :card="card"
+                :isSecondColumn="column.title === 'Столбец 2'"
+                :secondColumnCardCount="getSecondColumnCardCount()"
+                @remove-card="$emit('remove-card', $event)"
+                @update-card="$emit('update-card', $event)"
+            ></note-card>
+            <button v-if="canAddCard(column)" @click="$emit('add-card', column)">Добавить карточку</button>
+        </div>
     `,
     methods: {
         canAddCard(column) {
@@ -82,16 +82,16 @@ Vue.component('note-app', {
             nextCardId: 1
         };
     },
-     created() {
-         this.loadCards();
-     },
-     methods: {
-         loadCards() {
-             const savedData = JSON.parse(localStorage.getItem('cards'));
-             if (savedData) {
-                 this.columns = savedData.columns;
-                 this.nextCardId = savedData.nextCardId;
-             }
+    created() {
+        this.loadCards();
+    },
+    methods: {
+        loadCards() {
+            const savedData = JSON.parse(localStorage.getItem('cards'));
+            if (savedData) {
+                this.columns = savedData.columns;
+                this.nextCardId = savedData.nextCardId;
+            }
         },
         saveCards() {
             localStorage.setItem('cards', JSON.stringify({ columns: this.columns, nextCardId: this.nextCardId }));
@@ -127,6 +127,7 @@ Vue.component('note-app', {
 
             if (totalItems > 0) {
                 const completionRate = completedItems / totalItems;
+
                 if (completionRate > 0.5 && this.columns[0].cards.includes(card)) {
                     this.moveCard(card, 1);
                 } else if (completionRate === 1 && this.columns[1].cards.includes(card)) {
@@ -147,19 +148,19 @@ Vue.component('note-app', {
             }
         }
     },
-    template: `  
-        <div> 
-            <div class="columns">  
-                <note-column  
-                    v-for="(column, index) in columns" 
-                    :key="index" 
-                    :column="column" 
-                    @remove-card="removeCard" 
-                    @update-card="updateCard"  
-                    @add-card="addCard" 
-                ></note-column> 
-            </div> 
-        </div> 
+    template: `
+        <div>
+            <div class="columns">
+                <note-column
+                    v-for="(column, index) in columns"
+                    :key="index"
+                    :column="column"
+                    @remove-card="removeCard"
+                    @update-card="updateCard"
+                    @add-card="addCard"
+                ></note-column>
+            </div>
+        </div>
     `
 });
 
