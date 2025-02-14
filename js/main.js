@@ -149,13 +149,13 @@ Vue.component('note-app', {
     },
     template: `  
         <div> 
-            <div class="columns"> 
-                <note-column 
+            <div class="columns">  
+                <note-column  
                     v-for="(column, index) in columns" 
                     :key="index" 
                     :column="column" 
                     @remove-card="removeCard" 
-                    @update-card="updateCard" 
+                    @update-card="updateCard"  
                     @add-card="addCard" 
                 ></note-column> 
             </div> 
